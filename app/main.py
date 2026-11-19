@@ -19,7 +19,7 @@ async def metrics_mw(request: Request, call_next):
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "service": "capstone-api"}
+    return {"status": "ok", "service": "capstone-api", "version": "1.0.0"}
 
 
 @app.get("/ready")
