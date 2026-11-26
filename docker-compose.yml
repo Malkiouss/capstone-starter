@@ -1,14 +1,29 @@
 services:
   api:
     build: .
-    ports: ["8000:8000"]
+    ports:
+      - "8000:8000"
     environment:
+      # LAB ONLY - mots de passe de TP uniquement
       DATABASE_URL: postgresql://app:app@db:5432/app
-    depends_on: [db]
+    depends_on:
+      db:
+        condition: service_healthy
+
   db:
-    image: postgres:16
+    image: postgres:16-alpine
     environment:
+      # LAB ONLY - identifiants et mot de passe de laboratoire uniquement
       POSTGRES_USER: app
       POSTGRES_PASSWORD: app
       POSTGRES_DB: app
-# mots de passe de TP uniquement
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d app"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
